@@ -45,7 +45,7 @@ while True:
 					cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 				cv2.putText(frame, "****************ALERT!****************", (10,325),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-				#print ("Drowsy")
+				print ("Drowsy")
 		else:
 			flag = 0
 	# cv2.imshow("Frame", frame)
