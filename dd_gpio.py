@@ -22,8 +22,6 @@ GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
 # set pin as an output pin with optional initial state of HIGH
 GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
 
-curr_value = GPIO.HIGH
-
 thresh = 0.25
 frame_check = 20
 detect = dlib.get_frontal_face_detector()
@@ -66,6 +64,7 @@ try:
 					file.write("Drowsy, current flag value {} to pin {}".format(flag, output_pin))
 					file.write("Drowsy")
 
+					curr_value = GPIO.HIGH
 					GPIO.output(output_pin, curr_value)
 			else:
 				flag = 0
