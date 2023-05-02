@@ -34,7 +34,7 @@ cap = cv2.VideoCapture(0)
 flag = 0
 
 file = open("testfile.txt", "w")
-file.write("Starting demo now! Press CTRL+C to exit")
+file.write("Starting demo now! Press CTRL+C to exit\n")
 
 try:
 	while True:
@@ -58,11 +58,11 @@ try:
 
 			if ear < thresh:
 				flag += 1
-				file.write("Flag:", flag)
+				file.write(f"Flag: {flag}\n")
 
 				if flag >= frame_check:
-					file.write("Drowsy, current flag value {} to pin {}".format(flag, output_pin))
-					file.write("Drowsy")
+					file.write("Drowsy, current flag value {} to pin {}\n".format(flag, output_pin))
+					file.write("Drowsy\n")
 
 					curr_value = GPIO.HIGH
 					GPIO.output(output_pin, curr_value)
@@ -70,6 +70,7 @@ try:
 				flag = 0
 				curr_value = GPIO.LOW
 				GPIO.output(output_pin, curr_value)
+			file.flush()
 
 		key = cv2.waitKey(1) & 0xFF
 		if key == ord("q"):
