@@ -1,5 +1,5 @@
 from scipy.spatial import distance
-from imutils import face_utils
+from imutils import face_utils	#The module includes functions to work with facial landmarks
 import imutils
 import dlib
 import cv2
@@ -27,13 +27,13 @@ GPIO.setup(buzzer, GPIO.OUT, initial=GPIO.LOW)  # Buzzer pins set as output
 
 thresh = 0.25
 frame_check = 20
-detect = dlib.get_frontal_face_detector()
+detect = dlib.get_frontal_face_detector()	#initialize detect This object is a pre-trained face detector that can detect human faces in an image using a Histogram of Oriented Gradients (HOG) feature-based method.
 predict = dlib.shape_predictor(
-	"models/shape_predictor_68_face_landmarks.dat")  # Dat file is the crux of the code
+	"models/shape_predictor_68_face_landmarks.dat")  # This object is a pre-trained facial landmark predictor that can detect 68 facial landmarks on a detected face. The predictor is loaded from a pre-trained model file named shape_predictor_68_face_landmarks.dat.
 
-(lStart, lEnd) = face_utils.FACIAL_LANDMARKS_68_IDXS["left_eye"]
+(lStart, lEnd) = face_utils.FACIAL_LANDMARKS_68_IDXS["left_eye"]	# represent the indices of the left eye landmark, within the 68 facial landmarks detected by the predictor. 
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_68_IDXS["right_eye"]
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0)	#video capture
 flag = 0
 
 file = open("testfile.txt", "w")
@@ -68,23 +68,23 @@ def change_frame():
 keyboard.add_hotkey("backspace", change_frame)
 
 try:
-	while True:
-		ret, frame = cap.read()
-		frame = imutils.resize(frame, width=450)
-		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-		subjects = detect(gray, 0)
+	while True:	# captures frames from the webcam, resizes them, converts them to grayscale, and detects faces in the frames.
+		ret, frame = cap.read()	#Reads a frame from the video capture object cap returns two values: ret (a boolean indicating whether the frame was successfully read) and frame (the captured frame as a NumPy array).
+		frame = imutils.resize(frame, width=450)	# Resizes the captured frame to a new width of 450 pixels while maintaining the aspect ratio.
+		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)	#Converts the resized frame from the BGR color space to grayscale because the face detection and facial landmark detection algorithms work with grayscale images.
+		subjects = detect(gray, 0)	#Applies the dlib frontal face detector (detect) to the grayscale image (gray). The second argument 0 indicates that the image should not be upsampled before detection. The result is a list of rectangles (subjects) representing the detected faces in the image.
 
 		for subject in subjects:
-			shape = predict(gray, subject)
-			shape = face_utils.shape_to_np(shape)  # converting to NumPy Array
-			leftEye = shape[lStart:lEnd]
+			shape = predict(gray, subject)	#For each detected face (subject), the facial landmarks are predicted using the predict object
+			shape = face_utils.shape_to_np(shape)  # the resulting shape is converted to NumPy Array
+			leftEye = shape[lStart:lEnd]	#The left eye landmarks are extracted using the previously defined index ranges (lStart, lEnd).
 			rightEye = shape[rStart:rEnd]
 			leftEAR = eye_aspect_ratio(leftEye)
 			rightEAR = eye_aspect_ratio(rightEye)
-			ear = (leftEAR + rightEAR) / 2.0
-			leftEyeHull = cv2.convexHull(leftEye)
+			ear = (leftEAR + rightEAR) / 2.0	#The average EAR is computed by taking the mean of the left and right EARs.
+			leftEyeHull = cv2.convexHull(leftEye)	#A convex hull is a geometric concept that, given a set of points, represents the smallest convex polygon that contains all of the points.
 			rightEyeHull = cv2.convexHull(rightEye)
-			cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
+			cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)	#Draw the computed convexHull on the video
 			cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
 			if ear < thresh:
