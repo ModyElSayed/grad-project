@@ -52,7 +52,6 @@ def change_frame():
 			file.write("Please enter a number")
 
 	file.write("New frame_check: " + str(frame_check) + "\n")
-	print(frame_check)
 
 
 keyboard.add_hotkey("backspace", change_frame)
@@ -78,13 +77,13 @@ try:
 				file.write(f"Flag: {flag}\n")
 
 				if flag >= frame_check:
-					file.write("Drowsy, current flag value {} to pin {}\n".format(flag, buzzer))
-					file.write("Drowsy\n")
-
+					file.write("Drowsy, current flag value {}\n".format(flag))
 					GPIO.output(buzzer, GPIO.HIGH)
+					
 			else:
 				flag = 0
 				GPIO.output(buzzer, GPIO.LOW)
+				
 			file.flush()
 
 finally:
