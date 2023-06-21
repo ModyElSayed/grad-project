@@ -19,11 +19,9 @@ def eye_aspect_ratio(eye):
 
 # Pin Definitions:
 buzzer = 12
-#led_pin = 13
 
 GPIO.setmode(GPIO.BOARD)  # BOARD pin-numbering scheme
 GPIO.setup(buzzer, GPIO.OUT, initial=GPIO.LOW)  # Buzzer pins set as output
-#GPIO.setup(led_pin, GPIO.OUT, initial=GPIO.LOW)  # LED pins set as output
 
 thresh = 0.25
 frame_check = 20
@@ -41,12 +39,6 @@ file.write("Starting demo now! Press CTRL+C to exit\n")
 file.write(f"Process ID: {os.getpid()}")
 
 
-#def flash_led():
-#	GPIO.output(led_pin, GPIO.HIGH)
-#	time.sleep(0.5)
-#	GPIO.output(led_pin, GPIO.LOW)
-
-
 def change_frame():
 	# A limit of # of frames can be implemented here
 	global frame_check, file
@@ -58,10 +50,8 @@ def change_frame():
 			break
 		else:
 			file.write("Please enter a number")
-			#flash_led()
 
 	file.write("New frame_check: " + str(frame_check) + "\n")
-
 	print(frame_check)
 
 
@@ -82,10 +72,6 @@ try:
 			leftEAR = eye_aspect_ratio(leftEye)
 			rightEAR = eye_aspect_ratio(rightEye)
 			ear = (leftEAR + rightEAR) / 2.0	#The average EAR is computed by taking the mean of the left and right EARs.
-			leftEyeHull = cv2.convexHull(leftEye)	#A convex hull is a geometric concept that, given a set of points, represents the smallest convex polygon that contains all of the points.
-			rightEyeHull = cv2.convexHull(rightEye)
-			cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)	#Draw the computed convexHull on the video
-			cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
 			if ear < thresh:
 				flag += 1
@@ -95,17 +81,11 @@ try:
 					file.write("Drowsy, current flag value {} to pin {}\n".format(flag, buzzer))
 					file.write("Drowsy\n")
 
-					curr_value = GPIO.HIGH
-					GPIO.output(buzzer, curr_value)
+					GPIO.output(buzzer, GPIO.HIGH)
 			else:
 				flag = 0
-				curr_value = GPIO.LOW
-				GPIO.output(buzzer, curr_value)
+				GPIO.output(buzzer, GPIO.LOW)
 			file.flush()
-
-		key = cv2.waitKey(1) & 0xFF
-		if key == ord("q"):
-			break
 
 finally:
 	GPIO.cleanup()
